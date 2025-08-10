@@ -26,7 +26,7 @@
           </p>
           <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">
             <!-- START - valor del indicador 1 -->
-            {{ total_responses }}
+            {{ total_responses|default:"0" }}
             <!-- END - valor del indicador 1 -->
           </p>
         </div>
@@ -117,33 +117,24 @@
                 <th class="px-4 py-3">Columna 2</th>
               </tr>
             </thead>
+
             <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-
-              <!-- START - respuestas -->
-              <tr class="text-gray-700 dark:text-gray-400">
-                <td class="px-4 py-3 text-sm">
-                  <!-- START - fila.valor1 -->
-                  fila.valor1
-                  <!-- END - fila.valor1 -->
-                </td>
-                <td class="px-4 py-3 text-sm">
-                  <!-- START - fila.valor2 -->
-                  fila.valor2
-                  <!-- END - fila.valor2 -->
-                </td>
-              </tr>
-              <!-- END - respuestas -->
-
+              {% for r in rows %}
+                <tr class="text-gray-700 dark:text-gray-400">
+                  <td class="px-4 py-3 text-sm">{{ r.col1 }}</td>
+                  <td class="px-4 py-3 text-sm">
+                    {{ r.col2|default:"— vacío —" }}
+                  </td>
+                </tr>
+              {% endfor %}
             </tbody>
+
           </table>
         </div>
         <div
           class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
           <span class="flex items-center col-span-3">
-            <!-- START - # total de respuestas -->
-            XXX
-            <!-- END - # total de respuestas -->
-            respuestas
+            {{ rows|length }} respuestas
           </span>
         </div>
       </div>
@@ -156,6 +147,41 @@
             Título del gráfico
           </h4>
           <canvas id="line"></canvas>
+
+          {{ chart_labels|json_script:"chart-labels" }}
+          {{ series_a|json_script:"series-a" }}
+          {{ series_b|json_script:"series-b" }}
+
+          <script>
+            // Lee los datos que vinieron del servidor
+            const labels  = JSON.parse(document.getElementById("chart-labels").textContent);
+            const seriesA = JSON.parse(document.getElementById("series-a").textContent);
+            const seriesB = JSON.parse(document.getElementById("series-b").textContent);
+
+            // Si ya usas un script externo (charts-lines.js) que pinta el canvas,
+            // puedes adaptarlo para que lea estas variables en lugar de valores hardcode.
+            // Si no, aquí tienes un init básico con Chart.js:
+            if (window.Chart) {
+              const ctx = document.getElementById("line").getContext("2d");
+              new Chart(ctx, {
+                type: "line",
+                data: {
+                  labels: labels,
+                  datasets: [
+                    { label: "Serie A", data: seriesA },
+                    { label: "Serie B", data: seriesB },
+                  ],
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: { legend: { display: true } },
+                  scales: { y: { beginAtZero: false } },
+                },
+              });
+            }
+          </script>
+          
         </div>
       </div>
       <!-- END - Gráficos -->
