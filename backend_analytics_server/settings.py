@@ -30,11 +30,14 @@ SECRET_KEY = 'django-insecure-s0kd!)r)^&898%pr+68a1s-c+)_xe8en%^$h+o#yx=6xyy)4hw
 DEBUG = True
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://*.app.github.dev",
   "https://localhost:8000",
   "http://127.0.0.1:8000",
 ]
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "*",
+]
 
 # Fallo: acceso sin autenticación
 LOGIN_URL = '/login/'
@@ -87,17 +90,26 @@ WSGI_APPLICATION = 'backend_analytics_server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('MYSQLDATABASE', 'security'),
-        'USER': os.environ.get('MYSQLUSER', 'root'),
-        'PASSWORD': os.environ.get('MYSQLPASSWORD', ''),
-        'HOST': os.environ.get('MYSQLHOST', 'localhost'),
-        'PORT': os.environ.get('MYSQLPORT', '3306'),
-    }
-}
+BASE_DIR = Path(__file__).resolve().parent.parent
 
+if os.environ.get('USE_SQLITE', 'true').lower() == 'true':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('MYSQLDATABASE', 'security'),
+            'USER': os.environ.get('MYSQLUSER', 'root'),
+            'PASSWORD': os.environ.get('MYSQLPASSWORD', ''),
+            'HOST': os.environ.get('MYSQLHOST', 'localhost'),
+            'PORT': os.environ.get('MYSQLPORT', '3306'),
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

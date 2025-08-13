@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 import requests
 
 @login_required
-@permission_required('dashboard.index_viewer', raise_exception=True)
+#@permission_required('dashboard.index_viewer', raise_exception=True)
 def index(request):
     # 1) Traer dato externo (ej.: JSONPlaceholder) para el indicador
     total_responses = 0
