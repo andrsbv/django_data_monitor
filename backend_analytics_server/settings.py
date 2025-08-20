@@ -14,6 +14,13 @@ from pathlib import Path
 import pymysql
 import os
 
+
+print("MYSQLHOST:", os.environ.get("MYSQLHOST"))
+print("MYSQLUSER:", os.environ.get("MYSQLUSER"))
+print("MYSQLDATABASE:", os.environ.get("MYSQLDATABASE"))
+print("MYSQLPASSWORD:", os.environ.get("MYSQLPASSWORD"))
+print("MYSQLPORT:", os.environ.get("MYSQLPORT"))
+
 pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
